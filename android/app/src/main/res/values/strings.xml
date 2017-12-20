@@ -1,0 +1,4 @@
+<resources>
+    <string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">yes</string>
+    <string name="app_name">coin_ticker</string>
+</resources>
