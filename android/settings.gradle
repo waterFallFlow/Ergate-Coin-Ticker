@@ -1,0 +1,3 @@
+rootProject.name = 'ErgateCoinTicker'
+
+include ':app'
