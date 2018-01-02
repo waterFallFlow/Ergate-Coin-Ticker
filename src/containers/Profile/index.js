@@ -3,6 +3,9 @@ import { Button, View, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from '../../utils/dimension';
 import NavigationBar from 'react-native-navbar';
+import Entrance from './Entrance';
+import Transfer from './Transfer';
+import Export from './Export';
 
 const styles = StyleSheet.create({
   container: {
@@ -39,6 +42,7 @@ export default class ProfileScreen extends React.Component {
     return (  
       <View style={styles.container}>
         <NavigationBar title={{ title: '设置' }} leftButton={this.renderLeftButton()} />
+        <Entrance />
       </View>
     );
   }

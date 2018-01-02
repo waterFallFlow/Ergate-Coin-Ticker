@@ -31,16 +31,22 @@ export default class MarkertScreen extends React.Component {
   };
   
   state = {
-    progress: 0
+    progress: 0,
+    status: ''
   }
 
   componentDidMount() {
+    CodePush.notifyAppReady();
     this.codePushSync(); 
     AppState.addEventListener('change', (newState) => {
       if (newState === 'active') {
         this.codePushSync();
       }
     })
+
+    fetchApi('https://www.poloniex.com/private?command=returnTicker', (response) => {
+      console.log(response);
+    });    
   }
 
   codePushSync() {
@@ -53,24 +59,30 @@ export default class MarkertScreen extends React.Component {
 
   codePushStatusDidChange(status) {
     switch (status) {
-      case CodePush.SyncStatus.DOWNLOADING_PACKAGE:
-          console.log("DOWNLOADING_PACKAGE")
-          break;
-      case CodePush.SyncStatus.INSTALLING_UPDATE:
-          console.log("INSTALLING_UPDATE")
-          break;
-      case CodePush.SyncStatus.UP_TO_DATE:
-          console.log("UP_TO_DATE")
-          break;
-      case CodePush.SyncStatus.UPDATE_IGNORED:
-          console.log("UPDATE_IGNORED")
-          break;
-      case CodePush.SyncStatus.UPDATE_INSTALLED:
-          console.log("UPDATE_INSTALLED")
-          break;
-      case CodePush.SyncStatus.UNKNOWN_ERROR:
-          console.log("UNKNOWN_ERROR")
-          break;
+      case CodePush.SyncStatus.CHECKING_FOR_UPDATE://检查更新-1
+        this.setState({ status: "CHECKING_FOR_UPDATE" });
+        break ;
+      case CodePush.SyncStatus.AWAITING_USER_ACTION://等待用户操作-2
+        this.setState({ status: "AWAITING_USER_ACTION" });
+        break ;
+      case CodePush.SyncStatus.DOWNLOADING_PACKAGE://正在下载-3
+        this.setState({ status: "DOWNLOADING_PACKAGE" });
+        break ;
+      case CodePush.SyncStatus.INSTALLING_UPDATE://正在安装-4
+        this.setState({ status: "INSTALLING_UPDATE" });
+        break ;
+      case CodePush.SyncStatus.UP_TO_DATE://已经是最新版本-5
+        this.setState({ status: "UP_TO_DATE" });
+        break ;
+      case CodePush.SyncStatus.UPDATE_IGNORED://忽略更新-6
+        this.setState({ status: "UPDATE_IGNORED" });
+        break ;
+      case CodePush.SyncStatus.UPDATE_INSTALLED://更新并安装完成-7
+        this.setState({ status: "UPDATE_INSTALLED" });
+        break ;
+      case CodePush.SyncStatus.UNKNOWN_ERROR://发生错误-8
+        this.setState({ status: "UNKNOWN_ERROR" });
+        break ;
     }
   }
 
@@ -96,7 +108,10 @@ export default class MarkertScreen extends React.Component {
         <NavigationBar title={{ title: '首页' }} leftButton={this.renderLeftButton()} />
         <View style={[styles.content, styles.center]}>
           <Text>
-            111111
+            test-06
+          </Text>
+          <Text>
+            {this.state.status}
           </Text>
           <Text>
             {(this.state.progress*100).toFixed(2)}%
@@ -106,4 +121,17 @@ export default class MarkertScreen extends React.Component {
     );
   }
 
+}
+
+const fetchApi = (url, callback) => {
+  fetch(url)
+  .then((response) => {
+    return response.json();
+  })
+  .then((responseData) => {
+    callback && callback(responseData);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
 }
